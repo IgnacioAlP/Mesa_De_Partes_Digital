@@ -82,10 +82,21 @@ const useAuthStore = create((set, get) => ({
   // Registrarse
   signUp: async (userData) => {
     try {
-      // Paso 1: Crear usuario en Supabase Auth
+      // Crear usuario en Supabase Auth con metadata
+      // El trigger de la base de datos creará automáticamente el registro en usuarios
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
+        options: {
+          data: {
+            nombres: userData.nombres,
+            apellidos: userData.apellidos,
+            dni: userData.dni,
+            telefono: userData.telefono || null,
+            direccion: userData.direccion || null,
+            rol: 'ciudadano'
+          }
+        }
       });
       
       if (authError) {
@@ -93,52 +104,23 @@ const useAuthStore = create((set, get) => ({
         throw authError;
       }
 
-      // Verificar que el usuario fue creado
       if (!authData?.user?.id) {
-        throw new Error('No se pudo crear el usuario en auth.users');
+        throw new Error('No se pudo crear el usuario');
       }
 
-      console.log('Usuario creado en auth.users:', authData.user.id);
-
-      // Paso 2: Esperar un momento para asegurar que auth.users esté sincronizado
-      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('✅ Usuario creado exitosamente:', authData.user.id);
+      console.log('ℹ️  El registro en la tabla usuarios se creó automáticamente via trigger');
       
-      // Paso 3: Crear registro en tabla usuarios
-      const { data: userRecord, error: userError } = await supabase
-        .from('usuarios')
-        .insert([{
-          auth_user_id: authData.user.id,
-          nombres: userData.nombres,
-          apellidos: userData.apellidos,
-          dni: userData.dni,
-          email: userData.email,
-          telefono: userData.telefono || null,
-          direccion: userData.direccion || null,
-          rol: 'ciudadano',
-          estado: 'activo'
-        }])
-        .select()
-        .single();
-      
-      if (userError) {
-        console.error('Error insertando en tabla usuarios:', userError);
-        // Intentar eliminar el usuario de auth si falla la inserción
-        try {
-          await supabase.auth.admin.deleteUser(authData.user.id);
-        } catch (cleanupError) {
-          console.error('Error en limpieza:', cleanupError);
-        }
-        throw userError;
-      }
-
-      console.log('Usuario creado en tabla usuarios:', userRecord);
-      
-      return { success: true, data: userRecord };
+      return { 
+        success: true, 
+        data: authData.user,
+        message: 'Registro exitoso. Por favor verifica tu email.'
+      };
     } catch (error) {
-      console.error('Error completo en registro:', error);
+      console.error('❌ Error en registro:', error);
       return { 
         success: false, 
-        error: error.message || 'Error desconocido al registrarse'
+        error: error.message || 'Error al registrarse. Por favor intente nuevamente.'
       };
     }
   },
