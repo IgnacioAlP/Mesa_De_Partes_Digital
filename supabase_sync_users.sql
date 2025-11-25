@@ -20,6 +20,7 @@ LEFT JOIN public.usuarios u ON au.id = u.auth_user_id
 ORDER BY au.created_at DESC;
 
 -- Paso 2: Insertar usuarios faltantes en la tabla usuarios
+-- (Sin ON CONFLICT porque auth_user_id podría no tener constraint único)
 INSERT INTO public.usuarios (
     auth_user_id,
     email,
@@ -43,8 +44,7 @@ SELECT
     'activo'::user_status
 FROM auth.users au
 LEFT JOIN public.usuarios u ON au.id = u.auth_user_id
-WHERE u.id IS NULL
-ON CONFLICT (auth_user_id) DO NOTHING;
+WHERE u.id IS NULL;
 
 -- Paso 3: Verificar que todos los usuarios están sincronizados
 SELECT 
