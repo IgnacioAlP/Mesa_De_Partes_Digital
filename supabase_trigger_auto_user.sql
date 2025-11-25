@@ -8,8 +8,23 @@
 -- Paso 1: Crear función que se ejecutará automáticamente
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+    v_dni TEXT;
+    v_email TEXT;
+    dni_counter INTEGER := 0;
 BEGIN
-    -- Insertar en la tabla usuarios cuando se crea un usuario en auth.users
+    -- Preparar DNI único si no viene en metadata
+    v_dni := COALESCE(NEW.raw_user_meta_data->>'dni', '00000000');
+    v_email := NEW.email;
+    
+    -- Si el DNI es el por defecto, generar uno único
+    IF v_dni = '00000000' THEN
+        -- Generar un DNI único basado en el timestamp
+        v_dni := LPAD(EXTRACT(EPOCH FROM NOW())::BIGINT::TEXT, 8, '0');
+        v_dni := RIGHT(v_dni, 8);
+    END IF;
+    
+    -- Intentar insertar en la tabla usuarios
     INSERT INTO public.usuarios (
         auth_user_id,
         email,
@@ -23,17 +38,51 @@ BEGIN
     )
     VALUES (
         NEW.id,
-        NEW.email,
+        v_email,
         COALESCE(NEW.raw_user_meta_data->>'nombres', 'Usuario'),
         COALESCE(NEW.raw_user_meta_data->>'apellidos', 'Nuevo'),
-        COALESCE(NEW.raw_user_meta_data->>'dni', '00000000'),
-        COALESCE(NEW.raw_user_meta_data->>'telefono', NULL),
-        COALESCE(NEW.raw_user_meta_data->>'direccion', NULL),
-        COALESCE(NEW.raw_user_meta_data->>'rol', 'ciudadano')::user_role,
+        v_dni,
+        NULLIF(COALESCE(NEW.raw_user_meta_data->>'telefono', ''), ''),
+        NULLIF(COALESCE(NEW.raw_user_meta_data->>'direccion', ''), ''),
+        COALESCE((NEW.raw_user_meta_data->>'rol')::user_role, 'ciudadano'),
         'activo'::user_status
-    );
+    )
+    ON CONFLICT (auth_user_id) DO NOTHING;
     
     RETURN NEW;
+EXCEPTION
+    WHEN unique_violation THEN
+        -- Si hay conflicto de DNI o email, intentar con valores alternativos
+        RAISE WARNING 'Conflicto de unicidad en handle_new_user para %: %', NEW.email, SQLERRM;
+        -- Intentar con un DNI generado aleatoriamente
+        INSERT INTO public.usuarios (
+            auth_user_id,
+            email,
+            nombres,
+            apellidos,
+            dni,
+            telefono,
+            direccion,
+            rol,
+            estado
+        )
+        VALUES (
+            NEW.id,
+            v_email,
+            COALESCE(NEW.raw_user_meta_data->>'nombres', 'Usuario'),
+            COALESCE(NEW.raw_user_meta_data->>'apellidos', 'Nuevo'),
+            LPAD((RANDOM() * 99999999)::BIGINT::TEXT, 8, '0'),
+            NULLIF(COALESCE(NEW.raw_user_meta_data->>'telefono', ''), ''),
+            NULLIF(COALESCE(NEW.raw_user_meta_data->>'direccion', ''), ''),
+            COALESCE((NEW.raw_user_meta_data->>'rol')::user_role, 'ciudadano'),
+            'activo'::user_status
+        )
+        ON CONFLICT (auth_user_id) DO NOTHING;
+        RETURN NEW;
+    WHEN OTHERS THEN
+        -- Si hay cualquier otro error, registrarlo pero no fallar
+        RAISE WARNING 'Error general en handle_new_user: %', SQLERRM;
+        RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
