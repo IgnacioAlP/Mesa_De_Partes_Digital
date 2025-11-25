@@ -13,11 +13,19 @@ const NuevoTramite = () => {
   const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
   const [archivos, setArchivos] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [paso, setPaso] = useState(1); // 1: selección tipo, 2: formulario
 
   useEffect(() => {
     cargarTiposTramite();
   }, []);
+
+  // Validar que userData esté cargado
+  useEffect(() => {
+    if (userData) {
+      setLoading(false);
+    }
+  }, [userData]);
 
   useEffect(() => {
     // Si viene desde el dashboard con un tipo preseleccionado
@@ -44,6 +52,8 @@ const NuevoTramite = () => {
     } catch (error) {
       console.error('Error cargando tipos de trámite:', error);
       toast.error('Error al cargar los tipos de trámite');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,6 +124,11 @@ const NuevoTramite = () => {
 
   const crearTramite = async (e) => {
     e.preventDefault();
+    
+    if (!userData?.id) {
+      toast.error('Error: Usuario no identificado');
+      return;
+    }
     
     if (archivos.length === 0) {
       toast.error('Debe adjuntar al menos un documento');
@@ -202,6 +217,20 @@ const NuevoTramite = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
+
+  // Verificar que userData esté cargado
+  if (!userData || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-neutral-600">
+            {!userData ? 'Cargando información del usuario...' : 'Cargando tipos de trámite...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -326,7 +355,7 @@ const NuevoTramite = () => {
           </div>
 
           {/* Requisitos */}
-          {tipoSeleccionado.requisitos && (
+          {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' && (
             <div className="card">
               <h3 className="text-lg font-semibold text-neutral-900 mb-3 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-orange-600" />
