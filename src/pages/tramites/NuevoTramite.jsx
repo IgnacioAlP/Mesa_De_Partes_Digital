@@ -144,16 +144,11 @@ const NuevoTramite = () => {
     setCargando(true);
 
     try {
-      const formData = new FormData(e.target);
-      const asunto = formData.get('asunto');
-      const descripcion = formData.get('descripcion');
-
-      // Validar campos
-      if (!asunto || !descripcion) {
-        throw new Error('Debe completar todos los campos requeridos');
-      }
-      
       console.log('Creando expediente...');
+      
+      // Crear expediente con asunto y descripción automáticos basados en el tipo de trámite
+      const asunto = `Solicitud de ${tipoSeleccionado.nombre}`;
+      const descripcion = tipoSeleccionado.descripcion || `Trámite de ${tipoSeleccionado.nombre} solicitado por el ciudadano`;
       
       // Crear expediente
       const { data: expediente, error: expedienteError } = await supabase
@@ -397,29 +392,33 @@ const NuevoTramite = () => {
           </div>
 
           {/* Requisitos del Trámite */}
-          {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' && (
-            <div className="card bg-blue-50 border-blue-200">
-              <h3 className="text-lg font-semibold text-neutral-900 mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-blue-600" />
-                Requisitos del Trámite
-              </h3>
-              <div className="bg-white border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-neutral-600 mb-3 font-medium">
-                  Para completar este trámite, debe cumplir con los siguientes requisitos:
+          <div className="card border-2 border-blue-500 bg-blue-50">
+            <h3 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
+              <AlertCircle className="w-6 h-6 text-blue-600" />
+              Requisitos del Trámite
+            </h3>
+            {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' ? (
+              <div className="bg-white border border-blue-200 rounded-lg p-5">
+                <p className="text-sm text-neutral-700 mb-4 font-semibold">
+                  📋 Para completar este trámite, debe cumplir con los siguientes requisitos:
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {tipoSeleccionado.requisitos.split('\n').filter(r => r.trim()).map((requisito, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm text-neutral-700">
-                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span>{requisito.trim()}</span>
+                    <li key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-neutral-800 font-medium">{requisito.trim()}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="bg-white border border-blue-200 rounded-lg p-5">
+                <p className="text-sm text-neutral-600 italic">No se especificaron requisitos para este trámite.</p>
+              </div>
+            )}
+          </div>
 
-          {/* Datos del Solicitante */}
+          {/* Datos del Solicitante */
           <div className="card">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4">
               Datos del Solicitante
@@ -446,48 +445,7 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Información de la Solicitud */}
-          <div className="card">
-            <h3 className="text-lg font-semibold text-neutral-900 mb-4">
-              Información de la Solicitud
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Asunto *
-                </label>
-                <input
-                  type="text"
-                  name="asunto"
-                  required
-                  maxLength="200"
-                  className="input w-full"
-                  placeholder="Ej: Solicitud de licencia de funcionamiento para bodega"
-                />
-                <p className="text-xs text-neutral-500 mt-1">
-                  Resumen breve del trámite (máximo 200 caracteres)
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Descripción Detallada *
-                </label>
-                <textarea
-                  name="descripcion"
-                  required
-                  rows="6"
-                  className="input w-full"
-                  placeholder="Describa con detalle su solicitud, incluyendo información relevante que facilite el procesamiento de su trámite..."
-                />
-                <p className="text-xs text-neutral-500 mt-1">
-                  Proporcione toda la información necesaria para procesar su solicitud
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Documentos Necesarios */}
+          {/* Documentos Necesarios */
           <div className="card bg-amber-50 border-amber-200">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-amber-600" />
