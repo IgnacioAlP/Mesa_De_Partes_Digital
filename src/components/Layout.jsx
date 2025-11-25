@@ -18,33 +18,35 @@ const Layout = ({ children }) => {
   };
 
   const getNavItems = () => {
-    const items = [
-      { path: '/dashboard', icon: Home, label: 'Inicio', roles: ['all'] },
-      { path: '/tramites', icon: FileText, label: 'Mis Trámites', roles: ['ciudadano'] },
-      { path: '/nuevo-tramite', icon: FileText, label: 'Nuevo Trámite', roles: ['ciudadano'] },
-      { path: '/seguimiento', icon: Search, label: 'Seguimiento', roles: ['all'] },
+    const rol = userData?.rol;
+    
+    // Items comunes para todos
+    const commonItems = [
+      { path: '/dashboard', icon: Home, label: 'Inicio' }
     ];
 
-    // Items para personal municipal
-    if (['mesa_partes', 'area_tramite', 'alcalde'].includes(userData?.rol)) {
-      items.push(
-        { path: '/expedientes', icon: FileText, label: 'Expedientes', roles: ['mesa_partes', 'area_tramite', 'alcalde'] },
-        { path: '/derivaciones', icon: BarChart, label: 'Derivaciones', roles: ['mesa_partes', 'area_tramite'] }
-      );
-    }
+    // Items específicos por rol
+    const roleItems = {
+      ciudadano: [
+        { path: '/dashboard/ciudadano', icon: Home, label: 'Mis Trámites' },
+        { path: '/dashboard/nuevo-tramite', icon: FileText, label: 'Nuevo Trámite' }
+      ],
+      mesa_partes: [
+        { path: '/dashboard/mesa-partes', icon: FileText, label: 'Expedientes Nuevos' }
+      ],
+      area_tramite: [
+        { path: '/dashboard/area-tramite', icon: BarChart, label: 'Mis Expedientes' }
+      ],
+      alcalde: [
+        { path: '/dashboard/alcalde', icon: BarChart, label: 'Panel de Control' }
+      ],
+      ti: [
+        { path: '/dashboard/ti', icon: Users, label: 'Administración' },
+        { path: '/dashboard/ti', icon: Settings, label: 'Sistema' }
+      ]
+    };
 
-    // Items solo para TI
-    if (userData?.rol === 'ti') {
-      items.push(
-        { path: '/usuarios', icon: Users, label: 'Usuarios', roles: ['ti'] },
-        { path: '/configuracion', icon: Settings, label: 'Configuración', roles: ['ti'] }
-      );
-    }
-
-    return items.filter(item => 
-      item.roles.includes('all') || 
-      item.roles.includes(userData?.rol)
-    );
+    return [...commonItems, ...(roleItems[rol] || [])];
   };
 
   const navItems = getNavItems();

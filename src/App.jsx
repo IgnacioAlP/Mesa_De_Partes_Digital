@@ -10,11 +10,20 @@ import Register from './pages/auth/Register';
 // Public Pages
 import Home from './pages/public/Home';
 
-// Dashboard
+// Dashboard Pages
 import Dashboard from './pages/dashboard/Dashboard';
+import DashboardCiudadano from './pages/dashboard/DashboardCiudadano';
+import DashboardMesaPartes from './pages/dashboard/DashboardMesaPartes';
+import DashboardAreaTramite from './pages/dashboard/DashboardAreaTramite';
+import DashboardAlcalde from './pages/dashboard/DashboardAlcalde';
+import DashboardTI from './pages/dashboard/DashboardTI';
+
+// Tramites
+import NuevoTramite from './pages/tramites/NuevoTramite';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
 
 function App() {
   const initialize = useAuthStore((state) => state.initialize);
@@ -59,7 +68,75 @@ function App() {
           path="/dashboard" 
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/dashboard/ciudadano" 
+          element={
+            <ProtectedRoute allowedRoles={['ciudadano']}>
+              <Layout>
+                <DashboardCiudadano />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/mesa-partes" 
+          element={
+            <ProtectedRoute allowedRoles={['mesa_partes']}>
+              <Layout>
+                <DashboardMesaPartes />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/area-tramite" 
+          element={
+            <ProtectedRoute allowedRoles={['area_tramite']}>
+              <Layout>
+                <DashboardAreaTramite />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/alcalde" 
+          element={
+            <ProtectedRoute allowedRoles={['alcalde']}>
+              <Layout>
+                <DashboardAlcalde />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/ti" 
+          element={
+            <ProtectedRoute allowedRoles={['ti']}>
+              <Layout>
+                <DashboardTI />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/nuevo-tramite" 
+          element={
+            <ProtectedRoute allowedRoles={['ciudadano']}>
+              <Layout>
+                <NuevoTramite />
+              </Layout>
             </ProtectedRoute>
           } 
         />
