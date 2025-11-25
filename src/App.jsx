@@ -20,6 +20,7 @@ import DashboardTI from './pages/dashboard/DashboardTI';
 
 // Tramites
 import NuevoTramite from './pages/tramites/NuevoTramite';
+import DetalleExpediente from './pages/tramites/DetalleExpediente';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -136,6 +137,17 @@ function App() {
             <ProtectedRoute allowedRoles={['ciudadano']}>
               <Layout>
                 <NuevoTramite />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/dashboard/expediente/:id" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <DetalleExpediente />
               </Layout>
             </ProtectedRoute>
           } 
