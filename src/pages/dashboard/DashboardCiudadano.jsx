@@ -15,10 +15,17 @@ const DashboardCiudadano = () => {
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
-    cargarDatos();
+    if (userData?.id) {
+      cargarDatos();
+    }
   }, [userData]);
 
   const cargarDatos = async () => {
+    if (!userData?.id) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       // Cargar expedientes del ciudadano
       const { data: exps, error: errorExps } = await supabase
