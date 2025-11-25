@@ -1,11 +1,33 @@
 # 🔧 Solución: Recursión Infinita en Políticas RLS de Supabase
 
-## ❌ Error
+## ❌ Errores Comunes
+
+### Error 1: Recursión Infinita
 ```
 infinite recursion detected in policy for relation "usuarios"
 ```
 
-## 🎯 Causa del Problema
+### Error 2: Políticas Duplicadas
+```
+ERROR: policy "usuarios_update_own" for table "usuarios" already exists
+```
+
+## 🔐 Importante sobre Contraseñas
+
+**Las contraseñas NO se guardan en la tabla `usuarios`.**
+
+Supabase Auth maneja las contraseñas de forma segura en su tabla interna `auth.users`:
+- Las contraseñas se almacenan con hash bcrypt
+- Nunca se guardan en texto plano
+- La tabla `usuarios` solo tiene una referencia (`auth_user_id`) al usuario de autenticación
+
+**Flujo de autenticación:**
+1. Usuario se registra → Supabase crea registro en `auth.users` (con contraseña hasheada)
+2. Se crea registro en `usuarios` con `auth_user_id` apuntando a `auth.users`
+3. Usuario inicia sesión → Supabase valida contra `auth.users`
+4. Token JWT incluye el `auth.uid()` que se usa en las políticas RLS
+
+## 🎯 Causa del Problema de Recursión
 
 Las políticas RLS (Row Level Security) estaban creando recursión infinita porque:
 
@@ -65,21 +87,14 @@ CREATE POLICY "usuarios_select_ti"
    - Deberías ver un mensaje de éxito
    - Al final verás la lista de todas las políticas creadas
 
-### Opción 2: Eliminar y Recrear Manualmente
+### Opción 2: Si las políticas ya existen
 
-Si prefieres hacerlo paso a paso:
+El script actualizado elimina TODAS las políticas antes de crearlas, incluyendo:
+- Políticas con nombres antiguos
+- Políticas con nombres nuevos
+- Cualquier política duplicada
 
-1. **Elimina las políticas antiguas:**
-```sql
-DROP POLICY IF EXISTS "Los usuarios pueden ver su propio perfil" ON usuarios;
-DROP POLICY IF EXISTS "Los usuarios TI pueden ver todos los perfiles" ON usuarios;
-DROP POLICY IF EXISTS "Ciudadanos pueden ver sus propios expedientes" ON usuarios;
-DROP POLICY IF EXISTS "Personal municipal puede ver expedientes de su área" ON expedientes;
-```
-
-2. **Crea las nuevas políticas:**
-   - Copia el resto del script desde `supabase_fix_recursion.sql`
-   - Ejecuta en el SQL Editor
+**El script incluye más de 30 DROP POLICY para garantizar una limpieza completa.**
 
 ## 🔍 Verificar que Funcionó
 

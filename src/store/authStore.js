@@ -82,15 +82,28 @@ const useAuthStore = create((set, get) => ({
   // Registrarse
   signUp: async (userData) => {
     try {
-      // Crear usuario en Supabase Auth
+      // Paso 1: Crear usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
       });
       
-      if (authError) throw authError;
+      if (authError) {
+        console.error('Error en auth.signUp:', authError);
+        throw authError;
+      }
+
+      // Verificar que el usuario fue creado
+      if (!authData?.user?.id) {
+        throw new Error('No se pudo crear el usuario en auth.users');
+      }
+
+      console.log('Usuario creado en auth.users:', authData.user.id);
+
+      // Paso 2: Esperar un momento para asegurar que auth.users esté sincronizado
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Crear registro en tabla usuarios
+      // Paso 3: Crear registro en tabla usuarios
       const { data: userRecord, error: userError } = await supabase
         .from('usuarios')
         .insert([{
@@ -99,20 +112,34 @@ const useAuthStore = create((set, get) => ({
           apellidos: userData.apellidos,
           dni: userData.dni,
           email: userData.email,
-          telefono: userData.telefono,
-          direccion: userData.direccion,
+          telefono: userData.telefono || null,
+          direccion: userData.direccion || null,
           rol: 'ciudadano',
           estado: 'activo'
         }])
         .select()
         .single();
       
-      if (userError) throw userError;
+      if (userError) {
+        console.error('Error insertando en tabla usuarios:', userError);
+        // Intentar eliminar el usuario de auth si falla la inserción
+        try {
+          await supabase.auth.admin.deleteUser(authData.user.id);
+        } catch (cleanupError) {
+          console.error('Error en limpieza:', cleanupError);
+        }
+        throw userError;
+      }
+
+      console.log('Usuario creado en tabla usuarios:', userRecord);
       
       return { success: true, data: userRecord };
     } catch (error) {
-      console.error('Error en registro:', error);
-      return { success: false, error: error.message };
+      console.error('Error completo en registro:', error);
+      return { 
+        success: false, 
+        error: error.message || 'Error desconocido al registrarse'
+      };
     }
   },
   
