@@ -125,8 +125,14 @@ const NuevoTramite = () => {
   const crearTramite = async (e) => {
     e.preventDefault();
     
+    // Validaciones iniciales
     if (!userData?.id) {
       toast.error('Error: Usuario no identificado');
+      return;
+    }
+    
+    if (!tipoSeleccionado?.id) {
+      toast.error('Error: Tipo de trámite no seleccionado');
       return;
     }
     
@@ -139,6 +145,15 @@ const NuevoTramite = () => {
 
     try {
       const formData = new FormData(e.target);
+      const asunto = formData.get('asunto');
+      const descripcion = formData.get('descripcion');
+
+      // Validar campos
+      if (!asunto || !descripcion) {
+        throw new Error('Debe completar todos los campos requeridos');
+      }
+      
+      console.log('Creando expediente...');
       
       // Crear expediente
       const { data: expediente, error: expedienteError } = await supabase
@@ -146,8 +161,8 @@ const NuevoTramite = () => {
         .insert({
           ciudadano_id: userData.id,
           tipo_tramite_id: tipoSeleccionado.id,
-          asunto: formData.get('asunto'),
-          descripcion: formData.get('descripcion'),
+          asunto: asunto,
+          descripcion: descripcion,
           estado: 'registrado',
           area_actual: 'Mesa de Partes',
           fecha_registro: new Date().toISOString(),
@@ -156,13 +171,24 @@ const NuevoTramite = () => {
         .select()
         .single();
 
-      if (expedienteError) throw expedienteError;
+      if (expedienteError) {
+        console.error('Error al crear expediente:', expedienteError);
+        throw new Error(`Error al crear expediente: ${expedienteError.message}`);
+      }
+
+      if (!expediente) {
+        throw new Error('No se pudo crear el expediente');
+      }
+
+      console.log('Expediente creado:', expediente.id);
+      console.log('Subiendo archivos...');
 
       // Subir archivos
-      await subirArchivos(expediente.id);
+      const archivosSubidos = await subirArchivos(expediente.id);
+      console.log('Archivos subidos:', archivosSubidos.length);
 
       // Registrar en historial
-      await supabase
+      const { error: historialError } = await supabase
         .from('historial_estados')
         .insert({
           expediente_id: expediente.id,
@@ -172,16 +198,24 @@ const NuevoTramite = () => {
           usuario_id: userData.id
         });
 
+      if (historialError) {
+        console.error('Error al crear historial:', historialError);
+      }
+
       // Crear notificación para Mesa de Partes
-      const { data: usuariosMesa } = await supabase
+      const { data: usuariosMesa, error: mesaError } = await supabase
         .from('usuarios')
         .select('id')
         .eq('rol', 'mesa_partes')
         .eq('estado', 'activo')
         .limit(1);
 
+      if (mesaError) {
+        console.error('Error al buscar usuarios de mesa:', mesaError);
+      }
+
       if (usuariosMesa && usuariosMesa.length > 0) {
-        await supabase
+        const { error: notifError } = await supabase
           .from('notificaciones')
           .insert({
             usuario_id: usuariosMesa[0].id,
@@ -191,15 +225,23 @@ const NuevoTramite = () => {
             mensaje: `Nuevo expediente ${expediente.numero_expediente} de ${userData.nombres} ${userData.apellidos}`,
             leida: false
           });
+
+        if (notifError) {
+          console.error('Error al crear notificación:', notifError);
+        }
       }
 
       toast.success('Trámite creado exitosamente');
-      navigate('/dashboard');
+      
+      // Esperar un momento antes de redirigir
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+      
     } catch (error) {
       console.error('Error creando trámite:', error);
-      toast.error('Error al crear el trámite: ' + error.message);
-    } finally {
-      setCargando(false);
+      toast.error(error.message || 'Error al crear el trámite');
+      setCargando(false); // Asegurar que se desactive el loading en caso de error
     }
   };
 
@@ -354,14 +396,17 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Requisitos */}
+          {/* Requisitos del Trámite */}
           {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' && (
-            <div className="card">
+            <div className="card bg-blue-50 border-blue-200">
               <h3 className="text-lg font-semibold text-neutral-900 mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                Requisitos
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+                Requisitos del Trámite
               </h3>
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <div className="bg-white border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-neutral-600 mb-3 font-medium">
+                  Para completar este trámite, debe cumplir con los siguientes requisitos:
+                </p>
                 <ul className="space-y-2">
                   {tipoSeleccionado.requisitos.split('\n').filter(r => r.trim()).map((requisito, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-neutral-700">
@@ -401,10 +446,10 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Detalles del Trámite */}
+          {/* Información de la Solicitud */}
           <div className="card">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4">
-              Detalles del Trámite
+              Información de la Solicitud
             </h3>
             <div className="space-y-4">
               <div>
@@ -442,15 +487,19 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Documentos Adjuntos */}
-          <div className="card">
-            <h3 className="text-lg font-semibold text-neutral-900 mb-4">
-              Documentos Adjuntos *
+          {/* Documentos Necesarios */}
+          <div className="card bg-amber-50 border-amber-200">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-amber-600" />
+              Documentos Necesarios *
             </h3>
+            <p className="text-sm text-neutral-600 mb-4">
+              Adjunte los documentos solicitados en los requisitos. Todos los archivos deben estar en formato digital.
+            </p>
             
-            <div className="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors">
-              <Upload className="w-12 h-12 text-neutral-400 mx-auto mb-3" />
-              <p className="text-neutral-700 mb-2">
+            <div className="border-2 border-dashed border-amber-300 rounded-lg p-8 text-center hover:border-amber-500 transition-colors bg-white">
+              <Upload className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+              <p className="text-neutral-700 mb-2 font-medium">
                 Arrastra archivos aquí o haz clic para seleccionar
               </p>
               <p className="text-sm text-neutral-500 mb-4">
