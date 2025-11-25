@@ -19,21 +19,43 @@ Este error ocurre porque Netlify no tiene configuradas las variables de entorno 
 2. En el menú de la izquierda, busca **Environment variables** (Variables de entorno)
 3. Haz clic en **Environment variables**
 
-### 3. Agregar las Variables de Entorno
+### 3. Obtener las Credenciales de Supabase
+
+1. Ve a tu proyecto en Supabase: https://supabase.com/dashboard/project/kwwsnzkojqqoaydebfan/settings/api
+2. En la sección **Project API keys**, encontrarás:
+   - **Project URL** - Una URL como `https://xxxxx.supabase.co`
+   - **anon public** - Una clave larga que empieza con `eyJ...`
+3. **Copia estos valores** (los necesitarás en el siguiente paso)
+
+### 4. Agregar las Variables de Entorno en Netlify
+
+⚠️ **MUY IMPORTANTE:** Debes agregar el prefijo `VITE_` al nombre de las variables.
 
 Haz clic en **Add a variable** o **Add environment variables** y agrega las siguientes:
 
 #### Variable 1: VITE_SUPABASE_URL
-- **Key:** `VITE_SUPABASE_URL`
-- **Value:** `https://kwwsnzkojqqoaydebfan.supabase.co`
+- **Key:** `VITE_SUPABASE_URL` ⚠️ (NO uses `SUPABASE_URL`)
+- **Value:** `[Pega aquí tu Project URL de Supabase]`
 - **Scopes:** Selecciona todas las opciones (Production, Deploy Previews, Branch deploys)
 
 #### Variable 2: VITE_SUPABASE_ANON_KEY
-- **Key:** `VITE_SUPABASE_ANON_KEY`
-- **Value:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3d3NuemtvanFxb2F5ZGViZmFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMzM2NDYsImV4cCI6MjA3OTYwOTY0Nn0.ecH5DYX-qx3ypQt5dbwPiy-tYyLkiHowMVUzCJ0uwC4`
+- **Key:** `VITE_SUPABASE_ANON_KEY` ⚠️ (NO uses `SUPABASE_ANON_KEY`)
+- **Value:** `[Pega aquí tu anon public key de Supabase]`
 - **Scopes:** Selecciona todas las opciones (Production, Deploy Previews, Branch deploys)
 
-### 4. Guardar y Redesplegar
+### 📝 ¿Por qué `VITE_` al inicio?
+
+Vite solo expone al navegador las variables que comienzan con el prefijo `VITE_`. Esto es una medida de seguridad para evitar exponer variables sensibles accidentalmente.
+
+```
+Supabase te da:          Tú debes crear en Netlify:
+SUPABASE_URL        →    VITE_SUPABASE_URL
+SUPABASE_ANON_KEY   →    VITE_SUPABASE_ANON_KEY
+```
+
+**Copias el VALOR de Supabase, pero cambias el NOMBRE agregando `VITE_`**
+
+### 5. Guardar y Redesplegar
 
 1. Haz clic en **Save** o **Create variable** para cada variable
 2. Una vez agregadas ambas variables, ve a la pestaña **Deploys**
