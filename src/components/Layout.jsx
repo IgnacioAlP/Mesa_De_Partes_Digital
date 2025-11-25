@@ -4,7 +4,7 @@ import {
   Home, FileText, Search, Bell, Settings, LogOut, 
   Menu, X, User, Shield, Users, BarChart 
 } from 'lucide-react';
-import useAuthStore from '../../store/authStore';
+import useAuthStore from '../store/authStore';
 
 const Layout = ({ children }) => {
   const location = useLocation();
