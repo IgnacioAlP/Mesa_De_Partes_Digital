@@ -204,13 +204,27 @@ const Home = () => {
                   <div className="border-t border-neutral-200 pt-4">
                     <p className="text-xs font-medium text-neutral-700 mb-2">Requisitos:</p>
                     <ul className="space-y-1">
-                      {tramite.requisitos?.slice(0, 3).map((req, idx) => (
-                        <li key={idx} className="text-xs text-neutral-600 flex items-start">
-                          <CheckCircle className="h-3 w-3 text-accent-500 mr-1 mt-0.5 flex-shrink-0" />
-                          <span>{req}</span>
+                      {tramite.requisitos && typeof tramite.requisitos === 'string' ? (
+                        tramite.requisitos.split('\n').filter(r => r.trim()).slice(0, 3).map((req, idx) => (
+                          <li key={idx} className="text-xs text-neutral-600 flex items-start">
+                            <CheckCircle className="h-3 w-3 text-accent-500 mr-1 mt-0.5 flex-shrink-0" />
+                            <span>{req.trim()}</span>
+                          </li>
+                        ))
+                      ) : Array.isArray(tramite.requisitos) ? (
+                        tramite.requisitos.slice(0, 3).map((req, idx) => (
+                          <li key={idx} className="text-xs text-neutral-600 flex items-start">
+                            <CheckCircle className="h-3 w-3 text-accent-500 mr-1 mt-0.5 flex-shrink-0" />
+                            <span>{req}</span>
+                          </li>
+                        ))
+                      ) : null}
+                      {tramite.requisitos && typeof tramite.requisitos === 'string' && tramite.requisitos.split('\n').filter(r => r.trim()).length > 3 && (
+                        <li className="text-xs text-primary-600 font-medium">
+                          + {tramite.requisitos.split('\n').filter(r => r.trim()).length - 3} más...
                         </li>
-                      ))}
-                      {tramite.requisitos?.length > 3 && (
+                      )}
+                      {Array.isArray(tramite.requisitos) && tramite.requisitos.length > 3 && (
                         <li className="text-xs text-primary-600 font-medium">
                           + {tramite.requisitos.length - 3} más...
                         </li>
