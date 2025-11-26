@@ -416,34 +416,32 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Datos del Solicitante */
-          <div className="card">
-            <h3 className="text-lg font-semibold text-neutral-900 mb-4">
-              Datos del Solicitante
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-neutral-50 p-4 rounded-lg">
-              <div>
-                <p className="text-sm text-neutral-600">Nombres y Apellidos</p>
-                <p className="font-medium text-neutral-900">
-                  {userData.nombres} {userData.apellidos}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-neutral-600">DNI</p>
-                <p className="font-medium text-neutral-900">{userData.dni}</p>
-              </div>
-              <div>
-                <p className="text-sm text-neutral-600">Email</p>
-                <p className="font-medium text-neutral-900">{userData.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-neutral-600">Teléfono</p>
-                <p className="font-medium text-neutral-900">{userData.telefono || 'No registrado'}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Documentos Necesarios */}
+        {/* Datos del Solicitante */}
+                  <div className="card">
+                    <h3 className="text-lg font-semibold text-neutral-900 mb-4">
+                      Datos del Solicitante
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-neutral-50 p-4 rounded-lg">
+                      <div>
+                        <p className="text-sm text-neutral-600">Nombres y Apellidos</p>
+                        <p className="font-medium text-neutral-900">
+                          {userData.nombres} {userData.apellidos}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-neutral-600">DNI</p>
+                        <p className="font-medium text-neutral-900">{userData.dni}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-neutral-600">Email</p>
+                        <p className="font-medium text-neutral-900">{userData.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-neutral-600">Teléfono</p>
+                        <p className="font-medium text-neutral-900">{userData.telefono || 'No registrado'}</p>
+                      </div>
+                    </div>
+                  </div>}
           <div className="card bg-amber-50 border-amber-200">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-amber-600" />
