@@ -398,7 +398,7 @@ const NuevoTramite = () => {
               Requisitos del Trámite
             </h3>
             <div className="bg-white border border-blue-200 rounded-lg p-5">
-              {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' ? (
+              {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' ? 
                 <div>
                   <p className="text-sm text-neutral-700 mb-4 font-semibold">
                     Para completar este trámite, debe cumplir con los siguientes requisitos:
@@ -412,9 +412,9 @@ const NuevoTramite = () => {
                     ))}
                   </ul>
                 </div>
-              ) : (
+               : 
                 <p className="text-sm text-neutral-600 italic">No se especificaron requisitos para este trámite.</p>
-              )}
+              }
             </div>
           </div>
 
