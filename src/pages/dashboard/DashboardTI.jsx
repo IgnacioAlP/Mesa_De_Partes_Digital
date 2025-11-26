@@ -35,7 +35,7 @@ const DashboardTI = () => {
             *,
             usuarios(nombres, apellidos)
           `)
-          .order('fecha_accion', { ascending: false })
+          .order('created_at', { ascending: false })
           .limit(50);
 
         if (error) throw error;
@@ -389,14 +389,16 @@ const DashboardTI = () => {
                       {item.usuarios?.nombres} {item.usuarios?.apellidos}
                     </span>
                     <span className="text-xs text-neutral-500">
-                      {new Date(item.fecha_accion).toLocaleString('es-PE')}
+                      {new Date(item.created_at).toLocaleString('es-PE')}
                     </span>
                   </div>
                   <p className="text-sm text-neutral-600">
-                    {item.accion} - {item.tabla}
+                    {item.accion} {item.tabla_afectada ? `- ${item.tabla_afectada}` : ''}
                   </p>
-                  {item.detalle && (
-                    <p className="text-xs text-neutral-500 mt-1">{item.detalle}</p>
+                  {item.datos_nuevos && (
+                    <p className="text-xs text-neutral-500 mt-1">
+                      {JSON.stringify(item.datos_nuevos).substring(0, 100)}...
+                    </p>
                   )}
                 </div>
               </div>
