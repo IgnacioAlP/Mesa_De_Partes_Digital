@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Configuración</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 { color: #333; margin-top: 0; }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔍 Verificación de Configuración</h1>
+        <p>Esta página verifica si las variables de entorno están correctamente configuradas.</p>
+        <div id="results"></div>
+        <a href="/" class="btn">← Volver a la aplicación</a>
+    </div>
+
+    <script type="module">
+        const resultsDiv = document.getElementById('results');
+        
+        function addStatus(message, type) {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+        }
+
+        // Verificar variables de entorno
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        addStatus('<strong>Variables de Entorno:</strong>', 'warning');
+
+        if (supabaseUrl) {
+            addStatus(`✅ VITE_SUPABASE_URL: <code>${supabaseUrl}</code>`, 'success');
+        } else {
+            addStatus('❌ VITE_SUPABASE_URL: No configurada', 'error');
+        }
+
+        if (supabaseKey) {
+            const maskedKey = supabaseKey.substring(0, 20) + '...' + supabaseKey.substring(supabaseKey.length - 10);
+            addStatus(`✅ VITE_SUPABASE_ANON_KEY: <code>${maskedKey}</code>`, 'success');
+        } else {
+            addStatus('❌ VITE_SUPABASE_ANON_KEY: No configurada', 'error');
+        }
+
+        // Verificar conexión a Supabase
+        if (supabaseUrl && supabaseKey) {
+            addStatus('<strong>Probando conexión a Supabase...</strong>', 'warning');
+            
+            import('@supabase/supabase-js').then(({ createClient }) => {
+                try {
+                    const supabase = createClient(supabaseUrl, supabaseKey);
+                    
+                    supabase.from('tipos_tramite').select('count', { count: 'exact', head: true })
+                        .then(({ error, count }) => {
+                            if (error) {
+                                addStatus(`❌ Error al conectar: ${error.message}`, 'error');
+                            } else {
+                                addStatus(`✅ Conexión exitosa a Supabase. Tipos de trámite disponibles: ${count}`, 'success');
+                            }
+                        })
+                        .catch(err => {
+                            addStatus(`❌ Error de red: ${err.message}`, 'error');
+                        });
+                } catch (err) {
+                    addStatus(`❌ Error creando cliente: ${err.message}`, 'error');
+                }
+            }).catch(err => {
+                addStatus(`❌ Error cargando Supabase: ${err.message}`, 'error');
+            });
+        } else {
+            addStatus('⚠️ No se puede probar la conexión sin las variables de entorno', 'warning');
+            addStatus(`
+                <strong>Cómo configurar en Vercel:</strong><br>
+                1. Ve a tu proyecto en Vercel<br>
+                2. Settings → Environment Variables<br>
+                3. Agrega VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY<br>
+                4. Redeploy el proyecto
+            `, 'warning');
+        }
+
+        // Información adicional
+        addStatus(`<strong>Entorno:</strong> ${import.meta.env.MODE}`, 'warning');
+        addStatus(`<strong>URL actual:</strong> <code>${window.location.href}</code>`, 'warning');
+    </script>
+</body>
+</html>

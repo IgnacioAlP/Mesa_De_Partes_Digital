@@ -9,6 +9,12 @@ const useAuthStore = create((set, get) => ({
   // Inicializar sesión
   initialize: async () => {
     try {
+      if (!supabase) {
+        console.error('❌ Supabase no está inicializado');
+        set({ loading: false });
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.user) {
@@ -34,6 +40,11 @@ const useAuthStore = create((set, get) => ({
   // Obtener datos del usuario
   fetchUserData: async (authUserId) => {
     try {
+      if (!supabase) {
+        console.error('❌ Supabase no está inicializado');
+        return null;
+      }
+
       const { data, error } = await supabase
         .from('usuarios')
         .select('*')
@@ -63,6 +74,10 @@ const useAuthStore = create((set, get) => ({
   // Iniciar sesión
   signIn: async (email, password) => {
     try {
+      if (!supabase) {
+        throw new Error('Error de configuración: Supabase no está disponible');
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -82,6 +97,10 @@ const useAuthStore = create((set, get) => ({
   // Registrarse
   signUp: async (userData) => {
     try {
+      if (!supabase) {
+        throw new Error('Error de configuración: Supabase no está disponible');
+      }
+
       // Crear usuario en Supabase Auth con metadata
       // El trigger de la base de datos creará automáticamente el registro en usuarios
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -128,6 +147,10 @@ const useAuthStore = create((set, get) => ({
   // Cerrar sesión
   signOut: async () => {
     try {
+      if (!supabase) {
+        throw new Error('Error de configuración: Supabase no está disponible');
+      }
+
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
