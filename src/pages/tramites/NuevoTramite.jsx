@@ -228,10 +228,16 @@ const NuevoTramite = () => {
 
       toast.success('Trámite creado exitosamente');
       
+      // Limpiar el estado del formulario
+      setArchivos([]);
+      setTipoSeleccionado(null);
+      setPaso(1);
+      setCargando(false);
+      
       // Esperar un momento antes de redirigir
       setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
+        navigate('/dashboard/ciudadano');
+      }, 1500);
       
     } catch (error) {
       console.error('Error creando trámite:', error);
