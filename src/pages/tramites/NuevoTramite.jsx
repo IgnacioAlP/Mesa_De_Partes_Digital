@@ -15,6 +15,7 @@ const NuevoTramite = () => {
   const [cargando, setCargando] = useState(false);
   const [loading, setLoading] = useState(true);
   const [paso, setPaso] = useState(1); // 1: selección tipo, 2: formulario
+  const fileInputRef = React.useRef(null);
 
   useEffect(() => {
     cargarTiposTramite();
@@ -58,20 +59,62 @@ const NuevoTramite = () => {
   };
 
   const seleccionarTipo = (tipo) => {
+    // Limpiar archivos previos al seleccionar un nuevo tipo
+    setArchivos([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setTipoSeleccionado(tipo);
     setPaso(2);
+  };
+  
+  const volverAPaso1 = () => {
+    // Limpiar todo al volver al paso 1
+    setArchivos([]);
+    setTipoSeleccionado(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setPaso(1);
   };
 
   const handleArchivoChange = (e) => {
     const nuevosArchivos = Array.from(e.target.files);
+    
+    // Validar tipos de archivo permitidos
+    const tiposPermitidos = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'image/jpeg',
+      'image/jpg',
+      'image/png'
+    ];
+    
     const archivosValidos = nuevosArchivos.filter(archivo => {
-      const esValido = archivo.size <= 10 * 1024 * 1024; // 10MB max
-      if (!esValido) {
+      // Validar tamaño
+      if (archivo.size > 10 * 1024 * 1024) {
         toast.error(`${archivo.name} excede el tamaño máximo de 10MB`);
+        return false;
       }
-      return esValido;
+      
+      // Validar tipo
+      if (!tiposPermitidos.includes(archivo.type)) {
+        toast.error(`${archivo.name} no es un tipo de archivo permitido`);
+        return false;
+      }
+      
+      return true;
     });
+    
     setArchivos([...archivos, ...archivosValidos]);
+    
+    // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
+    if (e.target) {
+      e.target.value = '';
+    }
   };
 
   const eliminarArchivo = (index) => {
@@ -228,15 +271,20 @@ const NuevoTramite = () => {
 
       toast.success('Trámite creado exitosamente');
       
-      // Limpiar el estado del formulario
+      // Limpiar completamente el estado del formulario
       setArchivos([]);
       setTipoSeleccionado(null);
       setPaso(1);
       setCargando(false);
       
+      // Limpiar el input de archivos
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
       // Esperar un momento antes de redirigir
       setTimeout(() => {
-        navigate('/dashboard/ciudadano');
+        navigate('/dashboard/ciudadano', { replace: true });
       }, 1500);
       
     } catch (error) {
@@ -280,8 +328,9 @@ const NuevoTramite = () => {
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => paso === 1 ? navigate('/dashboard') : setPaso(1)}
+          onClick={() => paso === 1 ? navigate('/dashboard/ciudadano') : volverAPaso1()}
           className="btn btn-outline"
+          disabled={cargando}
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -467,6 +516,7 @@ const NuevoTramite = () => {
                 PDF, Word, Excel, imágenes (máx. 10MB por archivo)
               </p>
               <input
+                ref={fileInputRef}
                 type="file"
                 multiple
                 onChange={handleArchivoChange}
