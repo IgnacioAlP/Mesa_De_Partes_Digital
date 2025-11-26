@@ -7,35 +7,83 @@
 
 INSERT INTO tipos_tramite (codigo, nombre, descripcion, requisitos, tiempo_maximo_dias, costo, area_responsable, es_comun) VALUES
 ('LIC-FUNC', 'Licencia de Funcionamiento', 'Autorización municipal para el desarrollo de actividades económicas en establecimientos comerciales', 
-ARRAY['Solicitud dirigida al Alcalde', 'Copia de DNI del representante legal', 'Copia de RUC', 'Declaración Jurada de Cumplimiento', 'Certificado de Inspección Técnica de Seguridad'], 
+'Solicitud dirigida al Alcalde firmada por el titular o representante legal
+Copia simple del DNI del titular o representante legal
+Copia simple de RUC y vigencia de poder del representante legal (en caso de personas jurídicas)
+Declaración Jurada de Cumplimiento de Condiciones de Seguridad en Defensa Civil
+Certificado de Inspección Técnica de Seguridad en Defensa Civil (para establecimientos mayores a 100 m²)
+Copia simple de título de propiedad o contrato de alquiler del local
+Plano de ubicación y distribución del establecimiento
+Recibo de pago por derecho de trámite', 
 15, 150.00, 'Desarrollo Económico', true),
 
 ('CERT-RESID', 'Certificado de Residencia', 'Documento que acredita el domicilio del solicitante en el distrito de Mochumi',
-ARRAY['Solicitud con firma legalizada', 'Copia de DNI', 'Recibo de servicios públicos', 'Declaración jurada de domicilio'],
+'Solicitud con firma legalizada notarialmente o autenticada por la municipalidad
+Copia simple del DNI del solicitante
+Recibo de agua, luz o teléfono de los últimos 2 meses a nombre del solicitante
+Declaración jurada de domicilio con datos exactos de la vivienda
+Dos testigos con DNI que acrediten la residencia (opcional)
+Recibo de pago por derecho de trámite',
 5, 15.00, 'Secretaría General', true),
 
-('CERT-NUMERACION', 'Certificado de Numeración', 'Documento que asigna número municipal a un predio',
-ARRAY['Solicitud dirigida al Alcalde', 'Copia de DNI', 'Copia de título de propiedad o contrato', 'Plano de ubicación'],
+('CERT-NUMERACION', 'Certificado de Numeración Municipal', 'Documento que asigna número oficial municipal a un predio para fines de identificación catastral',
+'Solicitud dirigida al Alcalde indicando dirección exacta del predio
+Copia simple del DNI del propietario o representante legal
+Copia literal de dominio o título de propiedad del predio
+Plano de ubicación y localización del predio a escala 1:500
+Certificado de parámetros urbanísticos y edificatorios
+Declaración jurada de no tener otro número asignado
+Recibo de pago por derecho de trámite',
 10, 25.00, 'Catastro', true),
 
-('LIC-EDIF', 'Licencia de Edificación', 'Autorización para ejecutar obras de construcción, ampliación, remodelación o demolición',
-ARRAY['Formulario Único de Edificación', 'Copia de DNI', 'Planos de arquitectura', 'Memoria descriptiva', 'Certificado de parámetros urbanísticos'],
+('LIC-EDIF', 'Licencia de Edificación', 'Autorización municipal para ejecutar obras de construcción, ampliación, remodelación, refacción o demolición',
+'Formulario Único de Edificación (FUE) debidamente llenado y firmado
+Copia simple del DNI del propietario y del profesional responsable
+Planos de arquitectura, estructuras, instalaciones eléctricas y sanitarias firmados por profesional colegiado
+Memoria descriptiva del proyecto de edificación
+Certificado de parámetros urbanísticos y edificatorios vigente
+Estudio de mecánica de suelos (para edificaciones de más de 3 pisos)
+Certificado de factibilidad de servicios (agua, desagüe, energía eléctrica)
+Copia literal de dominio del predio
+Pago de derecho de trámite según el valor de la obra',
 30, 350.00, 'Obras Privadas', true),
 
-('CERT-CATASTRAL', 'Certificado Catastral', 'Documento que certifica las características catastrales de un predio',
-ARRAY['Solicitud dirigida al Alcalde', 'Copia de DNI', 'Copia de título de propiedad', 'Ubicación del predio'],
+('CERT-CATASTRAL', 'Certificado Catastral', 'Documento oficial que certifica las características físicas, legales y económicas de un predio según los registros catastrales municipales',
+'Solicitud dirigida al Alcalde especificando el código catastral o dirección exacta
+Copia simple del DNI del propietario o solicitante autorizado
+Copia literal de dominio expedida por SUNARP o título de propiedad
+Ubicación exacta del predio (dirección, lote, manzana, urbanización)
+Plano de ubicación referencial (opcional)
+Carta poder simple si es realizado por tercero
+Recibo de pago por derecho de trámite',
 7, 30.00, 'Catastro', true),
 
-('SOL-IMPUESTO', 'Solicitud de Fraccionamiento de Impuestos', 'Permite fraccionar deudas tributarias municipales',
-ARRAY['Solicitud con firma legalizada', 'Copia de DNI', 'Declaración de situación económica', 'Cronograma de pagos propuesto'],
+('SOL-IMPUESTO', 'Solicitud de Fraccionamiento de Deuda Tributaria Municipal', 'Permite fraccionar el pago de deudas tributarias municipales (predial, arbitrios, multas) en cuotas mensuales',
+'Solicitud con firma legalizada dirigida a la Gerencia de Administración Tributaria
+Copia simple del DNI del contribuyente o representante legal
+Declaración jurada de situación económica detallando ingresos y egresos mensuales
+Cronograma de pagos propuesto indicando número de cuotas y monto mensual
+Constancia de deuda emitida por el área de Rentas
+Declaración de no tener fraccionamientos vigentes anteriores
+Comprobante de pago de la cuota inicial (mínimo 10% de la deuda total)',
 10, 0.00, 'Rentas', true),
 
-('CERT-NO-ADEUDO', 'Certificado de No Adeudo', 'Documento que certifica que el contribuyente no tiene deudas tributarias',
-ARRAY['Solicitud simple', 'Copia de DNI', 'Número de predio o código de contribuyente'],
+('CERT-NO-ADEUDO', 'Certificado de No Adeudo Tributario', 'Documento que certifica que el contribuyente no registra deudas pendientes por tributos municipales',
+'Solicitud simple dirigida al Alcalde o Gerente de Rentas
+Copia simple del DNI del propietario o contribuyente
+Número de predio o código de contribuyente municipal
+Dirección exacta del predio consultado
+Copia simple de título de propiedad o documento que acredite titularidad
+Recibo de pago por derecho de trámite',
 3, 20.00, 'Rentas', true),
 
-('LIBRO-RECLAMO', 'Libro de Reclamaciones', 'Presentación de quejas o reclamos sobre servicios municipales',
-ARRAY['Formulario de reclamo', 'Copia de DNI', 'Documentos sustentatorios'],
+('LIBRO-RECLAMO', 'Libro de Reclamaciones Municipal', 'Presentación formal de quejas, reclamos o sugerencias sobre servicios y atención municipal',
+'Formulario oficial de reclamo disponible en Mesa de Partes o en línea
+Copia simple del DNI del reclamante
+Documentos que sustenten el reclamo (fotos, videos, correos, documentos previos)
+Detalle específico del motivo del reclamo y fecha de los hechos
+Petición concreta o solución esperada
+Evidencias adicionales relevantes al caso',
 30, 0.00, 'Atención al Ciudadano', true);
 
 -- =====================================================
