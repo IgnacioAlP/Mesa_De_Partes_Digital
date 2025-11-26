@@ -391,27 +391,24 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Requisitos del Trámite */}
           <div className="card border-2 border-blue-500 bg-blue-50">
             <h3 className="text-xl font-bold text-neutral-900 mb-3 flex items-center gap-2">
               <AlertCircle className="w-6 h-6 text-blue-600" />
               Requisitos del Trámite
             </h3>
             <div className="bg-white border border-blue-200 rounded-lg p-5">
+              <p className="text-sm text-neutral-700 mb-4 font-semibold">
+                Para completar este trámite, debe cumplir con los siguientes requisitos:
+              </p>
               {tipoSeleccionado.requisitos && typeof tipoSeleccionado.requisitos === 'string' && (
-                <>
-                  <p className="text-sm text-neutral-700 mb-4 font-semibold">
-                    Para completar este trámite, debe cumplir con los siguientes requisitos:
-                  </p>
-                  <ul className="space-y-3">
-                    {tipoSeleccionado.requisitos.split('\n').filter(r => r.trim()).map((requisito, index) => (
-                      <li key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-neutral-800 font-medium">{requisito.trim()}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
+                <ul className="space-y-3">
+                  {tipoSeleccionado.requisitos.split('\n').filter(r => r.trim()).map((requisito, index) => (
+                    <li key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-neutral-800 font-medium">{requisito.trim()}</span>
+                    </li>
+                  ))}
+                </ul>
               )}
               {(!tipoSeleccionado.requisitos || typeof tipoSeleccionado.requisitos !== 'string') && (
                 <p className="text-sm text-neutral-600 italic">No se especificaron requisitos para este trámite.</p>
