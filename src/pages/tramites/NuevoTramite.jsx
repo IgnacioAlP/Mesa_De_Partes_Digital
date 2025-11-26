@@ -445,7 +445,7 @@ const NuevoTramite = () => {
             </div>
           </div>
 
-          {/* Documentos Necesarios */
+          {/* Documentos Necesarios */}
           <div className="card bg-amber-50 border-amber-200">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-amber-600" />
