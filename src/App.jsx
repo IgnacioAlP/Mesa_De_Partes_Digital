@@ -26,10 +26,32 @@ import DetalleExpediente from './pages/tramites/DetalleExpediente';
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const initialize = useAuthStore((state) => state.initialize);
   const [configError, setConfigError] = useState(false);
+
+  // Suprimir errores de extensiones del navegador
+  useEffect(() => {
+    // Ignorar errores de extensiones de Chrome
+    const originalError = console.error;
+    console.error = (...args) => {
+      if (
+        typeof args[0] === 'string' &&
+        (args[0].includes('Could not establish connection') ||
+         args[0].includes('Extension context invalidated') ||
+         args[0].includes('chrome-extension://'))
+      ) {
+        return;
+      }
+      originalError.apply(console, args);
+    };
+
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
 
   useEffect(() => {
     if (!supabase) {
@@ -93,8 +115,9 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Toaster 
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Toaster 
         position="top-right"
         toastOptions={{
           duration: 4000,
@@ -216,6 +239,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

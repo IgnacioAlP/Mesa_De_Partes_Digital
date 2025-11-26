@@ -5,6 +5,7 @@ import {
   Menu, X, User, Shield, Users, BarChart 
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
+import toast from 'react-hot-toast';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -13,8 +14,30 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
+    try {
+      const result = await signOut();
+      if (result.success || result.success === undefined) {
+        // Limpiar storage local por si acaso
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Navegar al login
+        navigate('/login', { replace: true });
+        
+        // Recargar la página para limpiar completamente el estado
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 100);
+      } else {
+        toast.error('Error al cerrar sesión');
+      }
+    } catch (error) {
+      console.error('Error en handleSignOut:', error);
+      // Forzar cierre de sesión de todas formas
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/login';
+    }
   };
 
   const getNavItems = () => {
