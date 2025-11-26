@@ -413,11 +413,11 @@ const NuevoTramite = () => {
               {(!tipoSeleccionado.requisitos || typeof tipoSeleccionado.requisitos !== 'string') && (
                 <p className="text-sm text-neutral-600 italic">No se especificaron requisitos para este trámite.</p>
               )}
-            </div>
           </div>
+        </div>
 
         {/* Datos del Solicitante */}
-                  <div className="card">
+        <div className="card">
                     <h3 className="text-lg font-semibold text-neutral-900 mb-4">
                       Datos del Solicitante
                     </h3>
@@ -441,7 +441,8 @@ const NuevoTramite = () => {
                         <p className="font-medium text-neutral-900">{userData.telefono || 'No registrado'}</p>
                       </div>
                     </div>
-                  </div>}
+                  </div>
+
           <div className="card bg-amber-50 border-amber-200">
             <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-amber-600" />
