@@ -292,10 +292,15 @@ const DetalleExpediente = () => {
                         {obs.usuarios?.nombres} {obs.usuarios?.apellidos}
                       </span>
                       <span className="text-xs text-neutral-500">
-                        {new Date(obs.fecha_observacion).toLocaleString('es-PE')}
+                        {new Date(obs.created_at).toLocaleString('es-PE')}
                       </span>
                     </div>
-                    <p className="text-sm text-neutral-700">{obs.observacion}</p>
+                    <p className="text-sm text-neutral-700">{obs.descripcion}</p>
+                    {obs.requiere_subsanacion && (
+                      <span className="inline-block mt-2 px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+                        Requiere subsanación
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
