@@ -45,13 +45,48 @@ const useAuthStore = create((set, get) => ({
         return null;
       }
 
+      console.log('📊 Buscando usuario con auth_user_id:', authUserId);
+
       const { data, error } = await supabase
         .from('usuarios')
         .select('*')
         .eq('auth_user_id', authUserId)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error consultando tabla usuarios:', error);
+        
+        // Si no encuentra por auth_user_id, intentar buscar por email
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email) {
+          console.log('🔍 Intentando buscar por email:', user.email);
+          const { data: userByEmail, error: emailError } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', user.email)
+            .single();
+          
+          if (!emailError && userByEmail) {
+            console.log('✅ Usuario encontrado por email');
+            // Actualizar auth_user_id para futuras consultas
+            await supabase
+              .from('usuarios')
+              .update({ auth_user_id: authUserId })
+              .eq('id', userByEmail.id);
+            
+            set({ 
+              user: { id: authUserId }, 
+              userData: userByEmail 
+            });
+            
+            return userByEmail;
+          }
+        }
+        
+        throw error;
+      }
+      
+      console.log('✅ Datos de usuario encontrados:', data.nombres, data.apellidos, '- Rol:', data.rol);
       
       // Actualizar último acceso
       await supabase
@@ -66,7 +101,7 @@ const useAuthStore = create((set, get) => ({
       
       return data;
     } catch (error) {
-      console.error('Error obteniendo datos del usuario:', error);
+      console.error('❌ Error obteniendo datos del usuario:', error);
       return null;
     }
   },
@@ -78,18 +113,32 @@ const useAuthStore = create((set, get) => ({
         throw new Error('Error de configuración: Supabase no está disponible');
       }
 
+      console.log('🔐 Intentando iniciar sesión con:', email);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error de autenticación:', error);
+        throw error;
+      }
+
+      console.log('✅ Autenticación exitosa, buscando datos de usuario...');
       
-      await get().fetchUserData(data.user.id);
+      const userData = await get().fetchUserData(data.user.id);
+      
+      if (!userData) {
+        console.error('⚠️ Usuario autenticado pero sin datos en tabla usuarios');
+        throw new Error('No se encontraron datos del usuario. Contacte al administrador.');
+      }
+
+      console.log('✅ Login completo. Rol:', userData.rol);
       
       return { success: true, data };
     } catch (error) {
-      console.error('Error en inicio de sesión:', error);
+      console.error('❌ Error en inicio de sesión:', error);
       return { success: false, error: error.message };
     }
   },
