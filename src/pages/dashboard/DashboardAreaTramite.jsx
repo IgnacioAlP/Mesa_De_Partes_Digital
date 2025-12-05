@@ -30,7 +30,7 @@ const DashboardAreaTramite = () => {
           tipos_tramite(nombre, tiempo_maximo_dias),
           usuarios!expedientes_ciudadano_id_fkey(nombres, apellidos, dni),
           derivaciones!derivaciones_expediente_id_fkey(
-            usuario_origen:usuarios!derivaciones_usuario_origen_id_fkey(nombres, apellidos),
+            usuario_deriva:usuarios!derivaciones_usuario_deriva_fkey(nombres, apellidos),
             instrucciones,
             fecha_derivacion
           )
@@ -85,7 +85,7 @@ const DashboardAreaTramite = () => {
           expediente_id: expedienteId,
           estado_anterior: 'derivado',
           estado_nuevo: 'en_proceso',
-          observacion: `Expediente tomado por ${userData.nombres} ${userData.apellidos} del área ${userData.area}`,
+          comentario: `Expediente tomado por ${userData.nombres} ${userData.apellidos} del área ${userData.area}`,
           usuario_id: userData.id
         });
 
@@ -125,7 +125,7 @@ const DashboardAreaTramite = () => {
           expediente_id: expedienteSeleccionado.id,
           estado_anterior: 'en_proceso',
           estado_nuevo: 'aprobado',
-          observacion: `Aprobado por ${userData.area}: ${observacion}`,
+          comentario: `Aprobado por ${userData.area}: ${observacion}`,
           usuario_id: userData.id
         });
 
@@ -173,7 +173,7 @@ const DashboardAreaTramite = () => {
           expediente_id: expedienteSeleccionado.id,
           estado_anterior: 'en_proceso',
           estado_nuevo: 'rechazado',
-          observacion: `Rechazado por ${userData.area}: ${motivo}`,
+          comentario: `Rechazado por ${userData.area}: ${motivo}`,
           usuario_id: userData.id
         });
 
@@ -223,8 +223,8 @@ const DashboardAreaTramite = () => {
         .from('derivaciones')
         .insert({
           expediente_id: expedienteSeleccionado.id,
-          usuario_origen_id: userData.id,
-          usuario_destino_id: responsableId,
+          usuario_deriva: userData.id,
+          usuario_recibe: responsableId,
           area_origen: userData.area,
           area_destino: area,
           instrucciones: instrucciones,
@@ -240,7 +240,7 @@ const DashboardAreaTramite = () => {
           expediente_id: expedienteSeleccionado.id,
           estado_anterior: 'en_proceso',
           estado_nuevo: 'derivado',
-          observacion: `Derivado de ${userData.area} a ${area}`,
+          comentario: `Derivado de ${userData.area} a ${area}`,
           usuario_id: userData.id
         });
 
@@ -287,8 +287,8 @@ const DashboardAreaTramite = () => {
         .insert({
           expediente_id: expedienteSeleccionado.id,
           usuario_id: userData.id,
-          observacion: observacion,
-          fecha_observacion: new Date().toISOString()
+          comentario: observacion,
+          fecha_comentario: new Date().toISOString()
         });
 
       // Historial
@@ -298,7 +298,7 @@ const DashboardAreaTramite = () => {
           expediente_id: expedienteSeleccionado.id,
           estado_anterior: 'en_proceso',
           estado_nuevo: 'observado',
-          observacion: `Observado por ${userData.area}: ${observacion}`,
+          comentario: `Observado por ${userData.area}: ${observacion}`,
           usuario_id: userData.id
         });
 
@@ -473,7 +473,7 @@ const DashboardAreaTramite = () => {
                         {ultimaDerivacion && (
                           <div className="bg-neutral-50 p-2 rounded text-xs mb-2">
                             <p className="text-neutral-600">
-                              <strong>Derivado por:</strong> {ultimaDerivacion.usuario_origen?.nombres} {ultimaDerivacion.usuario_origen?.apellidos}
+                              <strong>Derivado por:</strong> {ultimaDerivacion.usuario_deriva?.nombres} {ultimaDerivacion.usuario_deriva?.apellidos}
                             </p>
                             <p className="text-neutral-600 mt-1">
                               <strong>Instrucciones:</strong> {ultimaDerivacion.instrucciones}
@@ -709,3 +709,4 @@ const DashboardAreaTramite = () => {
 };
 
 export default DashboardAreaTramite;
+

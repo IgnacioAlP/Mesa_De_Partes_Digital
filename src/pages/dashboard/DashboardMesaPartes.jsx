@@ -79,7 +79,7 @@ const DashboardMesaPartes = () => {
           expediente_id: expedienteId,
           estado_anterior: 'registrado',
           estado_nuevo: 'en_revision',
-          observacion: 'Expediente en revisión por Mesa de Partes',
+          comentario: 'Expediente en revisión por Mesa de Partes',
           usuario_id: userData.id
         });
 
@@ -121,8 +121,8 @@ const DashboardMesaPartes = () => {
         .from('derivaciones')
         .insert({
           expediente_id: expedienteSeleccionado.id,
-          usuario_origen_id: userData.id,
-          usuario_destino_id: responsableId,
+          usuario_deriva: userData.id,
+          usuario_recibe: responsableId,
           area_origen: 'Mesa de Partes',
           area_destino: area,
           instrucciones: instrucciones,
@@ -138,8 +138,9 @@ const DashboardMesaPartes = () => {
           expediente_id: expedienteSeleccionado.id,
           estado_anterior: 'en_revision',
           estado_nuevo: 'derivado',
-          observacion: `Derivado a ${area} - ${instrucciones}`,
-          usuario_id: userData.id
+          comentario: `Derivado a ${area} - ${instrucciones}`,
+          usuario_id: userData.id,
+          area: area
         });
 
       // Crear notificación
@@ -187,8 +188,8 @@ const DashboardMesaPartes = () => {
         .insert({
           expediente_id: expedienteId,
           usuario_id: userData.id,
-          observacion: observacion,
-          fecha_observacion: new Date().toISOString()
+          comentario: observacion,
+          fecha_comentario: new Date().toISOString()
         });
 
       // Historial
@@ -198,7 +199,7 @@ const DashboardMesaPartes = () => {
           expediente_id: expedienteId,
           estado_anterior: expediente.estado,
           estado_nuevo: 'observado',
-          observacion: observacion,
+          comentario: observacion,
           usuario_id: userData.id
         });
 
@@ -507,3 +508,4 @@ const DashboardMesaPartes = () => {
 };
 
 export default DashboardMesaPartes;
+

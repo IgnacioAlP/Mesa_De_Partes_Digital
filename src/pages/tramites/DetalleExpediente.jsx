@@ -41,7 +41,7 @@ const DetalleExpediente = () => {
         .from('documentos')
         .select('*')
         .eq('expediente_id', id)
-        .order('created_at', { ascending: false });
+        .order('fecha_subida', { ascending: false });
 
       if (docsError) throw docsError;
       setDocumentos(docs || []);
@@ -67,7 +67,7 @@ const DetalleExpediente = () => {
           usuarios(nombres, apellidos)
         `)
         .eq('expediente_id', id)
-        .order('fecha_observacion', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (obsError) throw obsError;
       setObservaciones(obs || []);
@@ -77,8 +77,8 @@ const DetalleExpediente = () => {
         .from('derivaciones')
         .select(`
           *,
-          usuario_origen:usuarios!derivaciones_usuario_origen_id_fkey(nombres, apellidos),
-          usuario_destino:usuarios!derivaciones_usuario_destino_id_fkey(nombres, apellidos)
+          usuario_deriva:usuarios!derivaciones_usuario_deriva_fkey(nombres, apellidos),
+          usuario_recibe:usuarios!derivaciones_usuario_recibe_fkey(nombres, apellidos)
         `)
         .eq('expediente_id', id)
         .order('fecha_derivacion', { ascending: false });
@@ -96,9 +96,12 @@ const DetalleExpediente = () => {
 
   const descargarDocumento = async (documento) => {
     try {
+      // Extraer el path del storage desde ruta_almacenamiento
+      const storagePath = documento.ruta_almacenamiento?.split('/documentos/').pop() || documento.ruta_almacenamiento;
+      
       const { data, error } = await supabase.storage
         .from('documentos')
-        .download(documento.ruta_archivo);
+        .download(storagePath);
 
       if (error) throw error;
 
@@ -292,8 +295,8 @@ const DetalleExpediente = () => {
                             {der.area_origen} → {der.area_destino}
                           </p>
                           <p className="text-xs text-neutral-600">
-                            De: {der.usuario_origen?.nombres} {der.usuario_origen?.apellidos} → 
-                            Para: {der.usuario_destino?.nombres} {der.usuario_destino?.apellidos}
+                            De: {der.usuario_deriva?.nombres} {der.usuario_deriva?.apellidos} → 
+                            Para: {der.usuario_recibe?.nombres} {der.usuario_recibe?.apellidos}
                           </p>
                         </div>
                         <span className="text-xs text-neutral-500">
