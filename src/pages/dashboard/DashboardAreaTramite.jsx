@@ -22,25 +22,50 @@ const DashboardAreaTramite = () => {
 
   const cargarDatos = async () => {
     try {
+      console.log('🔍 Cargando expedientes para área:', userData.area, 'Usuario:', userData.id);
+      
       // Cargar expedientes asignados al área del usuario
       const { data: exps, error: errorExps } = await supabase
         .from('expedientes')
         .select(`
           *,
           tipos_tramite(nombre, tiempo_maximo_dias),
-          usuarios!expedientes_ciudadano_id_fkey(nombres, apellidos, dni),
-          derivaciones!derivaciones_expediente_id_fkey(
-            usuario_deriva:usuarios!derivaciones_usuario_deriva_fkey(nombres, apellidos),
-            instrucciones,
-            fecha_derivacion
-          )
+          usuarios!expedientes_ciudadano_id_fkey(nombres, apellidos, dni)
         `)
         .eq('area_actual', userData.area)
         .in('estado', ['derivado', 'en_proceso', 'observado'])
         .order('created_at', { ascending: false });
 
-      if (errorExps) throw errorExps;
-      setExpedientes(exps || []);
+      if (errorExps) {
+        console.error('❌ Error cargando expedientes:', errorExps);
+        throw errorExps;
+      }
+      
+      console.log('✅ Expedientes cargados:', exps?.length || 0);
+      
+      // Cargar derivaciones por separado para cada expediente
+      if (exps && exps.length > 0) {
+        const expedientesConDerivaciones = await Promise.all(
+          exps.map(async (exp) => {
+            const { data: derivaciones } = await supabase
+              .from('derivaciones')
+              .select(`
+                *,
+                usuario_deriva:usuarios!derivaciones_usuario_deriva_fkey(nombres, apellidos)
+              `)
+              .eq('expediente_id', exp.id)
+              .order('fecha_derivacion', { ascending: false });
+            
+            return {
+              ...exp,
+              derivaciones: derivaciones || []
+            };
+          })
+        );
+        setExpedientes(expedientesConDerivaciones);
+      } else {
+        setExpedientes([]);
+      }
 
       // Cargar usuarios para derivaciones
       const { data: users, error: errorUsers } = await supabase
