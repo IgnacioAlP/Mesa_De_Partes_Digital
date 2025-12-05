@@ -188,8 +188,9 @@ const DashboardMesaPartes = () => {
         .insert({
           expediente_id: expedienteId,
           usuario_id: userData.id,
-          comentario: observacion,
-          fecha_comentario: new Date().toISOString()
+          tipo: 'observacion',
+          descripcion: observacion,
+          requiere_subsanacion: true
         });
 
       // Historial

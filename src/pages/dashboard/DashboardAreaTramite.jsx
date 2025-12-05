@@ -287,8 +287,9 @@ const DashboardAreaTramite = () => {
         .insert({
           expediente_id: expedienteSeleccionado.id,
           usuario_id: userData.id,
-          comentario: observacion,
-          fecha_comentario: new Date().toISOString()
+          tipo: 'observacion',
+          descripcion: observacion,
+          requiere_subsanacion: true
         });
 
       // Historial
