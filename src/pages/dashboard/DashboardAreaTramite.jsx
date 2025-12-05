@@ -212,6 +212,7 @@ const DashboardAreaTramite = () => {
         .update({
           estado: 'derivado',
           area_actual: area,
+          responsable_actual: responsableId,
           updated_at: new Date().toISOString()
         })
         .eq('id', expedienteSeleccionado.id);
