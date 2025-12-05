@@ -22,6 +22,8 @@ const DetalleExpediente = () => {
 
   const cargarExpediente = async () => {
     try {
+      console.log('🔍 Cargando expediente ID:', id);
+      
       // Cargar expediente
       const { data: exp, error: expError } = await supabase
         .from('expedientes')
@@ -33,20 +35,31 @@ const DetalleExpediente = () => {
         .eq('id', id)
         .single();
 
-      if (expError) throw expError;
+      if (expError) {
+        console.error('❌ Error cargando expediente:', expError);
+        throw expError;
+      }
+      
+      console.log('✅ Expediente cargado:', exp);
       setExpediente(exp);
 
       // Cargar documentos
+      console.log('📄 Cargando documentos...');
       const { data: docs, error: docsError } = await supabase
         .from('documentos')
         .select('*')
         .eq('expediente_id', id)
         .order('fecha_subida', { ascending: false });
 
-      if (docsError) throw docsError;
+      if (docsError) {
+        console.error('❌ Error cargando documentos:', docsError);
+        throw docsError;
+      }
+      console.log('✅ Documentos cargados:', docs?.length || 0);
       setDocumentos(docs || []);
 
       // Cargar historial
+      console.log('📋 Cargando historial...');
       const { data: hist, error: histError } = await supabase
         .from('historial_estados')
         .select(`
@@ -56,7 +69,11 @@ const DetalleExpediente = () => {
         .eq('expediente_id', id)
         .order('fecha_cambio', { ascending: false });
 
-      if (histError) throw histError;
+      if (histError) {
+        console.error('❌ Error cargando historial:', histError);
+        throw histError;
+      }
+      console.log('✅ Historial cargado:', hist?.length || 0);
       setHistorial(hist || []);
 
       // Cargar observaciones
@@ -73,6 +90,7 @@ const DetalleExpediente = () => {
       setObservaciones(obs || []);
 
       // Cargar derivaciones
+      console.log('🔄 Cargando derivaciones...');
       const { data: der, error: derError } = await supabase
         .from('derivaciones')
         .select(`
@@ -83,12 +101,19 @@ const DetalleExpediente = () => {
         .eq('expediente_id', id)
         .order('fecha_derivacion', { ascending: false });
 
-      if (derError) throw derError;
+      if (derError) {
+        console.error('❌ Error cargando derivaciones:', derError);
+        throw derError;
+      }
+      console.log('✅ Derivaciones cargadas:', der?.length || 0);
       setDerivaciones(der || []);
 
+      console.log('✅ Todos los datos cargados correctamente');
+
     } catch (error) {
-      console.error('Error cargando expediente:', error);
-      toast.error('Error al cargar el expediente');
+      console.error('❌ ERROR GENERAL cargando expediente:', error);
+      console.error('Detalles del error:', JSON.stringify(error, null, 2));
+      toast.error(`Error al cargar el expediente: ${error.message || 'Desconocido'}`);
     } finally {
       setLoading(false);
     }
