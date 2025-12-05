@@ -24,7 +24,7 @@ const DashboardAreaTramite = () => {
     try {
       console.log('🔍 Cargando expedientes para área:', userData.area, 'Usuario:', userData.id);
       
-      // Cargar expedientes asignados al área del usuario
+      // Cargar expedientes asignados al usuario actual (responsable_actual)
       const { data: exps, error: errorExps } = await supabase
         .from('expedientes')
         .select(`
@@ -32,7 +32,7 @@ const DashboardAreaTramite = () => {
           tipos_tramite(nombre, tiempo_maximo_dias),
           usuarios!expedientes_ciudadano_id_fkey(nombres, apellidos, dni)
         `)
-        .eq('area_actual', userData.area)
+        .eq('responsable_actual', userData.id)
         .in('estado', ['derivado', 'en_proceso', 'observado'])
         .order('created_at', { ascending: false });
 
