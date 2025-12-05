@@ -146,10 +146,11 @@ const NuevoTramite = () => {
           .insert({
             expediente_id: expedienteId,
             nombre_archivo: archivo.name,
-            ruta_archivo: nombreArchivo,
-            url_archivo: publicUrl,
-            tipo_documento: archivo.type,
-            tamanio: archivo.size
+            ruta_almacenamiento: publicUrl,
+            tipo_archivo: archivo.type,
+            tamano_bytes: archivo.size,
+            subido_por: userData.id,
+            es_documento_original: true
           })
           .select()
           .single();
@@ -232,8 +233,9 @@ const NuevoTramite = () => {
           expediente_id: expediente.id,
           estado_anterior: null,
           estado_nuevo: 'registrado',
-          observacion: 'Expediente creado por el ciudadano',
-          usuario_id: userData.id
+          comentario: 'Expediente creado por el ciudadano',
+          usuario_id: userData.id,
+          area: 'Mesa de Partes'
         });
 
       if (historialError) {
