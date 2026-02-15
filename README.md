@@ -1,268 +1,305 @@
-# 🏛️ Mesa de Partes Digital - Municipalidad Distrital de Mochumi
+# 📋 Mesa De Partes Digital
 
-Sistema de gestión documental digital para la trazabilidad de trámites y expedientes de la Municipalidad Distrital de Mochumi, Lambayeque, Perú.
+[![React](https://img.shields.io/badge/React-18.3-61dafb?logo=react&logoColor=white)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646cff?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Netlify](https://img.shields.io/badge/Netlify-Deploy-00c7b7?logo=netlify&logoColor=white)](https://www.netlify.com/)
 
-![Escudo de Mochumi](public/logo-mochumi.png)
+> **Sistema de Gestión de Trámites Administrativos**
 
-## 📋 Descripción del Proyecto
+Mesa De Partes Digital es un sistema web completo y profesional para la gestión de trámites administrativos, desarrollado con tecnologías modernas. Permite a ciudadanos y personal administrativo gestionar expedientes, realizar seguimiento de trámites en tiempo real, y administrar todo el ciclo de vida de documentos oficiales de manera digital, segura y eficiente.
 
-Mesa de Partes Digital es una plataforma web moderna desarrollada con React que permite a los ciudadanos y al personal municipal gestionar trámites documentales de manera completamente digital, disponible 24/7 y con total transparencia en el seguimiento.
-
-### 🎯 Objetivo Principal
-
-Implementar una Mesa de Partes Digital que permita registrar trámites, adjuntar documentos y realizar seguimiento en línea, garantizando trazabilidad y atención oportuna al ciudadano.
+---
 
 ## ✨ Características Principales
 
-### Para Ciudadanos
-- ✅ Registro y autenticación segura
-- 📄 Registro de trámites en línea
-- 📎 Adjuntar documentos digitales (PDF, imágenes)
-- 🔍 Seguimiento en tiempo real del estado del expediente
-- 🔔 Notificaciones automáticas por email/SMS
-- 📊 Historial completo de trámites
-- 🌐 Acceso 24/7 desde cualquier dispositivo
+- ✅ **Gestión completa de expedientes y trámites** - Sistema integral de documentación
+- ✅ **Sistema de autenticación con roles** - Admin, Usuario, Operador con permisos específicos
+- ✅ **Dashboard administrativo** - Visualización y control centralizado
+- ✅ **Seguimiento de trámites en tiempo real** - Trazabilidad completa de expedientes
+- ✅ **Generación automática de PDFs** - Documentos oficiales automatizados
+- ✅ **Gestión de tipos de trámites y requisitos** - Catálogo configurable
+- ✅ **Sistema de plazos legales** - Alertas y control de vencimientos
+- ✅ **Registro de auditoría** - Log completo de acciones del sistema
+- ✅ **Interfaz responsive** - Acceso desde cualquier dispositivo
 
-### Para Personal Municipal
-- 👥 Gestión de expedientes por área
-- 🔄 Workflow de derivación automatizado
-- ⏰ Alertas de vencimiento de plazos
-- 📝 Registro de observaciones
-- 📈 Dashboard con estadísticas
-- 🔐 Control de acceso basado en roles (RBAC)
-
-### Para Área de TI
-- 🛠️ CRUD completo de usuarios
-- 🎭 Asignación de roles y permisos
-- 📊 Auditoría de acciones
-- ⚙️ Configuración del sistema
-
-## 🔒 Seguridad de la Información
-
-- 🔐 Cifrado de datos sensibles
-- 🔑 Autenticación robusta con Supabase Auth
-- 👤 Control de acceso basado en roles (RBAC)
-- 📝 Registro de auditoría completo
-- 🛡️ Row Level Security (RLS) en base de datos
-- 🔒 Políticas de acceso granulares
+---
 
 ## 🚀 Tecnologías Utilizadas
 
 ### Frontend
-- **React 18.3** - Framework de UI
-- **Vite** - Build tool y dev server
-- **React Router 6** - Navegación
-- **Tailwind CSS** - Estilos y diseño responsivo
-- **Lucide React** - Íconos
-- **Zustand** - State management
-- **React Hot Toast** - Notificaciones
+- **React 18** - Biblioteca de interfaz de usuario
+- **Vite** - Build tool y servidor de desarrollo ultrarrápido
+- **Tailwind CSS** - Framework de estilos utility-first
+- **React Router** - Navegación y enrutamiento
+- **Zustand** - State management ligero
+- **React Hot Toast** - Notificaciones elegantes
 
 ### Backend
 - **Supabase** - Backend as a Service
   - PostgreSQL Database
-  - Authentication
-  - Storage
-  - Row Level Security
+  - Authentication & Authorization
+  - Row Level Security (RLS)
+  - Storage para documentos
+  - Triggers y Functions (PLpgSQL)
   - Real-time subscriptions
 
-## 🎨 Diseño
+### Generación de Documentos
+- **Python** - Scripts para generación de PDFs (`generador_pdfs/`)
+- Procesamiento de plantillas de documentos
 
-El sistema utiliza una paleta de colores basada en el escudo oficial de Mochumi:
+### Despliegue
+- **Netlify** - Hosting y despliegue continuo
+- CI/CD automatizado
 
-- **Azul Primary** (#0087FF) - Color institucional principal
-- **Amarillo Secondary** (#FFCD32) - Sol y antorcha
-- **Verde Accent** (#4CAF50) - Caña y agricultura
-- **Rojo Danger** (#F44336) - Llama y alertas
+---
 
-## 📦 Instalación
+## 📋 Requisitos Previos
 
-### Prerrequisitos
-- Node.js 18+ y npm/yarn
-- Cuenta en Supabase (gratuita)
+Antes de comenzar, asegúrate de tener instalado:
 
-### Paso 1: Clonar el repositorio
+- **Node.js 18+** (LTS recomendado)
+- **npm** o **yarn** (gestor de paquetes)
+- **Cuenta de Supabase** (gratis - [supabase.com](https://supabase.com))
+- **Cuenta de Netlify** (opcional, solo para despliegue)
+
+---
+
+## ⚡ Inicio Rápido
+
 ```bash
+# 1. Clonar el repositorio
 git clone https://github.com/IgnacioAlP/Mesa_De_Partes_Digital.git
 cd Mesa_De_Partes_Digital
-```
 
-### Paso 2: Instalar dependencias
-```bash
+# 2. Instalar dependencias
 npm install
+
+# 3. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales de Supabase
+
+# 4. Ejecutar en desarrollo
+npm run dev
 ```
 
-### Paso 3: Configurar Supabase
+La aplicación estará disponible en `http://localhost:5173`
 
-1. Crear un proyecto en [Supabase](https://supabase.com)
-2. Ejecutar el script `supabase_schema.sql` en el SQL Editor de Supabase
-3. Ejecutar el script `supabase_data.sql` para cargar datos de simulación
-4. Configurar Storage bucket para documentos
+> 💡 **Tip:** Para una guía paso a paso más detallada, consulta [QUICKSTART.md](./QUICKSTART.md) o [ACCION_INMEDIATA.md](./ACCION_INMEDIATA.md)
 
-### Paso 4: Configurar variables de entorno
+---
 
-Crear un archivo `.env` en la raíz del proyecto:
+## ⚙️ Configuración
+
+### Variables de Entorno
+
+El proyecto requiere las siguientes variables de entorno en el archivo `.env`:
 
 ```env
 VITE_SUPABASE_URL=tu_supabase_project_url
 VITE_SUPABASE_ANON_KEY=tu_supabase_anon_key
 ```
 
-### Paso 5: Iniciar el servidor de desarrollo
-```bash
-npm run dev
-```
+### Configuración de Supabase
 
-La aplicación estará disponible en `http://localhost:3000`
+Este proyecto utiliza Supabase como backend. Necesitarás:
 
-## 🏗️ Estructura del Proyecto
+1. Crear un proyecto en [Supabase](https://supabase.com)
+2. Ejecutar los scripts SQL de configuración (ver sección [Base de Datos](#-base-de-datos))
+3. Configurar el bucket de Storage para documentos
+4. Configurar las políticas de Row Level Security (RLS)
 
-```
-Mesa_De_Partes_Digital/
-├── public/
-│   └── logo-mochumi.png        # Logo de la municipalidad
-├── src/
-│   ├── components/
-│   │   ├── Layout.jsx          # Layout principal
-│   │   └── ProtectedRoute.jsx  # HOC para rutas protegidas
-│   ├── lib/
-│   │   └── supabase.js         # Cliente de Supabase
-│   ├── pages/
-│   │   ├── auth/
-│   │   │   ├── Login.jsx       # Página de inicio de sesión
-│   │   │   └── Register.jsx    # Página de registro
-│   │   ├── dashboard/
-│   │   │   └── Dashboard.jsx   # Dashboard principal
-│   │   └── public/
-│   │       └── Home.jsx         # Página pública inicial
-│   ├── store/
-│   │   └── authStore.js        # Store de autenticación
-│   ├── App.jsx                 # Componente principal
-│   ├── main.jsx                # Entry point
-│   └── index.css               # Estilos globales
-├── supabase_schema.sql         # Esquema de base de datos
-├── supabase_data.sql           # Datos de simulación
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── README.md
-```
-
-## 👥 Roles y Permisos
-
-### Ciudadano
-- Ver y crear sus propios trámites
-- Seguimiento de expedientes
-- Recibir notificaciones
-- Subir documentos
-
-### Mesa de Partes
-- Recibir y registrar expedientes
-- Verificar requisitos
-- Derivar a áreas correspondientes
-- Generar reportes
-
-### Área de Trámite
-- Gestionar expedientes de su área
-- Procesar solicitudes
-- Generar observaciones
-- Aprobar/rechazar trámites
-
-### Alcalde
-- Vista completa de expedientes
-- Aprobación de trámites críticos
-- Reportes ejecutivos
-
-### TI
-- Gestión completa de usuarios
-- Asignación de roles
-- Configuración del sistema
-- Acceso a auditoría
-
-## 📊 Base de Datos
-
-### Tablas Principales
-
-- **usuarios** - Información de usuarios del sistema
-- **tipos_tramite** - Catálogo de tipos de trámites
-- **expedientes** - Registro de expedientes
-- **documentos** - Archivos adjuntos
-- **derivaciones** - Workflow de derivación
-- **historial_estados** - Trazabilidad de cambios
-- **observaciones** - Comentarios y requerimientos
-- **notificaciones** - Alertas para usuarios
-- **auditoria** - Log de acciones del sistema
-
-## 🔄 Workflow de Trámites
-
-1. **Ciudadano** solicita el trámite online
-2. **Mesa de Partes** recibe y verifica requisitos
-3. Sistema valida documentos y genera expediente
-4. **Mesa de Partes** deriva a área correspondiente
-5. **Área** procesa el trámite
-6. Si requiere subsanación → Observación → Ciudadano
-7. **Área** aprueba/rechaza
-8. **Alcalde** firma (si aplica)
-9. Expediente finalizado
-10. Notificación al ciudadano
-
-## 📱 Funcionalidades Futuras (Roadmap)
-
-- [ ] Módulo de pagos en línea
-- [ ] App móvil nativa (iOS/Android)
-- [ ] Firma digital integrada
-- [ ] Integración con RENIEC para validación de identidad
-- [ ] Dashboard de analítica avanzada
-- [ ] Chatbot para consultas frecuentes
-- [ ] Exportación masiva de reportes
-- [ ] API pública para integraciones
-
-## 🧪 Datos de Prueba
-
-El sistema incluye datos de simulación realistas:
-
-### Usuarios de Prueba
-- **TI:** ti@mochumi.gob.pe
-- **Mesa de Partes:** mesapartes@mochumi.gob.pe
-- **Ciudadano:** juan.garcia@email.com
-
-*Nota: Las contraseñas deben configurarse durante el registro inicial*
-
-### Trámites Comunes Incluidos
-- Licencia de Funcionamiento
-- Certificado de Residencia
-- Certificado de Numeración
-- Licencia de Edificación
-- Certificado Catastral
-- Certificado de No Adeudo
-- Libro de Reclamaciones
-
-## 🤝 Contribución
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama feature (`git checkout -b feature/NuevaCaracteristica`)
-3. Commit tus cambios (`git commit -m 'Agregar nueva característica'`)
-4. Push a la rama (`git push origin feature/NuevaCaracteristica`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto es propiedad de la **Municipalidad Distrital de Mochumi**.
-
-## 👨‍💻 Autor
-
-Desarrollado para la Municipalidad Distrital de Mochumi, Lambayeque, Perú.
-
-## 📞 Contacto
-
-- **Municipalidad:** mesapartes@mochumi.gob.pe
-- **Soporte Técnico:** ti@mochumi.gob.pe
-- **Teléfono:** (074) 123-4567
+> 📖 **Documentación detallada:** Consulta [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) para instrucciones completas de configuración
 
 ---
 
-**Tierra Fértil - Mochumi** 🌾🔥
+## 📁 Estructura del Proyecto
 
-*Sistema de Mesa de Partes Digital - Transformación Digital del Gobierno Local*
+```
+Mesa_De_Partes_Digital/
+├── src/                          # Código fuente React
+│   ├── components/              # Componentes reutilizables
+│   ├── pages/                   # Páginas de la aplicación
+│   ├── services/                # Servicios y APIs
+│   ├── store/                   # State management (Zustand)
+│   ├── lib/                     # Utilidades y configuración
+│   └── App.jsx                  # Componente principal
+├── generador_pdfs/              # Scripts Python para PDFs
+│   ├── generar_documentos_ejemplo.py
+│   ├── requirements.txt
+│   └── documentos_ejemplo/
+├── public/                      # Archivos estáticos
+├── supabase_*.sql              # Scripts de base de datos
+├── netlify.toml                # Configuración de Netlify
+├── package.json                # Dependencias del proyecto
+├── vite.config.js              # Configuración de Vite
+└── tailwind.config.js          # Configuración de Tailwind
+```
 
+---
+
+## 📦 Módulos del Sistema
+
+El sistema está organizado en los siguientes módulos principales:
+
+- **🗂️ Gestión de Expedientes** - Creación, edición y seguimiento de expedientes
+- **📄 Gestión de Trámites** - Control de diferentes tipos de trámites
+- **👥 Administración de Usuarios** - CRUD de usuarios y perfiles
+- **🔐 Control de Roles y Permisos** - Sistema RBAC (Role-Based Access Control)
+- **📊 Generación de Reportes** - Exportación y análisis de datos
+- **🔍 Auditoría** - Registro detallado de acciones del sistema
+
+---
+
+## 📚 Documentación
+
+Este proyecto cuenta con **documentación extensa y detallada**. A continuación se presenta el índice completo:
+
+### 🚀 Guías Rápidas
+- [**QUICKSTART.md**](./QUICKSTART.md) - Guía de inicio rápido (5 minutos)
+- [**ACCION_INMEDIATA.md**](./ACCION_INMEDIATA.md) - Pasos inmediatos para empezar
+- [**INICIO.md**](./INICIO.md) - Guía de introducción al proyecto
+
+### 🔧 Configuración y Setup
+- [**SUPABASE_SETUP.md**](./SUPABASE_SETUP.md) - Configuración completa de Supabase
+- [**SUPABASE_AUTH_INFO.md**](./SUPABASE_AUTH_INFO.md) - Información de autenticación
+- [**SUPABASE_RLS_FIX.md**](./SUPABASE_RLS_FIX.md) - Solución de problemas de RLS
+- [**NETLIFY_ENV_SETUP.md**](./NETLIFY_ENV_SETUP.md) - Configuración de variables en Netlify
+
+### 🚀 Despliegue
+- [**DEPLOYMENT.md**](./DEPLOYMENT.md) - Guía completa de despliegue
+- [**DEPLOY_QUICKFIX.md**](./DEPLOY_QUICKFIX.md) - Soluciones rápidas de despliegue
+- [**HOTFIX_DEPLOY.md**](./HOTFIX_DEPLOY.md) - Correcciones urgentes en producción
+
+### 📖 Documentación Técnica
+- [**SISTEMA_COMPLETO.md**](./SISTEMA_COMPLETO.md) - Documentación técnica completa del sistema
+- [**ESTADO_PROYECTO.md**](./ESTADO_PROYECTO.md) - Estado actual y roadmap del proyecto
+- [**NOTAS_PROYECTO.md**](./NOTAS_PROYECTO.md) - Notas técnicas y decisiones de diseño
+- [**ARCHIVOS_EJEMPLO_TRAMITES.md**](./ARCHIVOS_EJEMPLO_TRAMITES.md) - Ejemplos de trámites
+
+### 👥 Contribución y Usuario
+- [**CONTRIBUTING.md**](./CONTRIBUTING.md) - Guía de contribución al proyecto
+- [**USER_MANUAL.md**](./USER_MANUAL.md) - Manual de usuario del sistema
+
+> 💡 **Nota:** La documentación está en constante actualización. Siempre consulta la versión más reciente en el repositorio.
+
+---
+
+## 🗄️ Base de Datos
+
+El proyecto incluye múltiples scripts SQL para configurar la base de datos en Supabase:
+
+### Scripts Principales
+
+| Script | Descripción |
+|--------|-------------|
+| `supabase_schema.sql` | Esquema principal de la base de datos |
+| `supabase_data.sql` | Datos iniciales y de prueba |
+| `supabase_storage_setup.sql` | Configuración de storage para documentos |
+| `supabase_rls_simple.sql` | Políticas de Row Level Security |
+| `supabase_usuarios_gestion.sql` | Gestión de usuarios |
+| `supabase_trigger_auto_user.sql` | Triggers automáticos |
+| `supabase_sync_users.sql` | Sincronización de usuarios |
+| `supabase_fix_auditoria.sql` | Corrección de auditoría |
+| `supabase_fix_foreign_keys.sql` | Corrección de claves foráneas |
+| `supabase_fix_recursion.sql` | Corrección de recursión |
+| `supabase_verify_fk.sql` | Verificación de integridad |
+
+### Scripts Adicionales
+
+- `actualizar_plazos_legales.sql` - Actualización de plazos legales
+- `actualizar_requisitos.sql` - Actualización de requisitos de trámites
+
+> ⚠️ **Importante:** Ejecuta los scripts en el orden indicado en [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+
+---
+
+## 🚀 Despliegue
+
+### Despliegue en Netlify
+
+El proyecto está configurado para desplegarse automáticamente en Netlify:
+
+1. Conecta tu repositorio con Netlify
+2. Configura las variables de entorno (ver [NETLIFY_ENV_SETUP.md](./NETLIFY_ENV_SETUP.md))
+3. El despliegue se realizará automáticamente con cada push a `main`
+
+### Variables de Entorno Requeridas
+
+```bash
+VITE_SUPABASE_URL=tu_supabase_url
+VITE_SUPABASE_ANON_KEY=tu_supabase_anon_key
+```
+
+> 📖 **Documentación completa:** Consulta [DEPLOYMENT.md](./DEPLOYMENT.md) para instrucciones detalladas
+
+---
+
+## 📊 Estado del Proyecto
+
+**Versión Actual:** 1.0.0  
+**Estado:** ✅ Sistema funcional en producción  
+**Última Actualización:** Noviembre 2024
+
+El sistema está completamente funcional con todos los módulos principales implementados. Para más detalles sobre el estado actual, funcionalidades implementadas y roadmap, consulta [ESTADO_PROYECTO.md](./ESTADO_PROYECTO.md).
+
+---
+
+## 🤝 Contribución
+
+¡Las contribuciones son bienvenidas! Si deseas contribuir al proyecto:
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Realiza tus cambios y haz commit (`git commit -m 'Añadir nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+Para más detalles sobre cómo contribuir, consulta [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+### 🐛 Reportar Issues
+
+Si encuentras un bug o tienes una sugerencia:
+- Abre un [issue en GitHub](https://github.com/IgnacioAlP/Mesa_De_Partes_Digital/issues)
+- Describe el problema o sugerencia en detalle
+- Incluye pasos para reproducir (si es un bug)
+
+---
+
+## 📄 Licencia
+
+Este proyecto está desarrollado para propósitos de gestión administrativa. Consulta con el propietario del repositorio para más información sobre términos de uso.
+
+---
+
+## 👨‍💻 Autor y Equipo
+
+**Desarrollado por:** IgnacioAlP  
+**Repositorio:** [github.com/IgnacioAlP/Mesa_De_Partes_Digital](https://github.com/IgnacioAlP/Mesa_De_Partes_Digital)
+
+### 🙏 Agradecimientos
+
+Gracias a todos los contribuidores que han participado en este proyecto y a la comunidad open source por las herramientas y librerías utilizadas.
+
+---
+
+## 📞 Soporte
+
+Para soporte técnico o consultas sobre el proyecto:
+
+- 📧 Abre un issue en GitHub
+- 💬 Consulta la documentación disponible
+- 📖 Revisa el [Manual de Usuario](./USER_MANUAL.md)
+
+---
+
+<div align="center">
+
+**⚡ Mesa De Partes Digital - Gestión Moderna de Trámites Administrativos**
+
+Desarrollado con ❤️ usando React, Vite y Supabase
+
+[Documentación](./SISTEMA_COMPLETO.md) • [Quick Start](./QUICKSTART.md) • [Contribuir](./CONTRIBUTING.md)
+
+</div>
